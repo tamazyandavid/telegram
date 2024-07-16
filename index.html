@@ -1,44 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Mini App</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-</head>
-<body>
-    <h1>Welcome to the Telegram Mini App</h1>
-    <div id="data-container">Loading data...</div>
+const apiUrl = 'https://marketplace-api.ortak.me/api/v1/collections/6/nfts';
+const corsProxy = 'https://cors-anywhere.herokuapp.com/';
 
-    <script>
-        window.Telegram.WebApp.ready();
+async function fetchData() {
+  try {
+    const response = await fetch(corsProxy + apiUrl);
+    const data = await response.json();
+    displayData(data);
+  } catch (error) {
+    document.getElementById('data-container').innerText = 'Failed to load data.';
+    console.error('Error fetching data:', error);
+  }
+}
 
-        // Replace 'COLLECTIONID' with the actual collection ID
-        const collectionId = '6';
-        const apiUrl = `https://marketplace-api.ortak.me/api/v1/collections/${collectionId}/nfts?`;
+function displayData(data) {
+  const dataContainer = document.getElementById('data-container');
+  dataContainer.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+}
 
-        // Function to fetch data from the API and display it
-        async function fetchData() {
-            try {
-                const response = await fetch(apiUrl);
-                console.log(response);
-                const data = await response.json();
-                console.log(data);
-                displayData(data);
-            } catch (error) {
-                document.getElementById('data-container').innerText = 'Failed to load data.';
-                console.error('Error fetching data:', error);
-            }
-        }
-
-        // Function to display the fetched data
-        function displayData(data) {
-            const dataContainer = document.getElementById('data-container');
-            dataContainer.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-        }
-
-        // Fetch and display data on page load
-        fetchData();
-    </script>
-</body>
-</html>
+// Fetch and display data on page load
+fetchData();
